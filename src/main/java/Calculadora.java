@@ -25,14 +25,10 @@ public class Calculadora {
     private JButton boton0;
     private JButton botonpunto;
     private JButton botonigual;
-    private String operadorUno;
-    private Double operadorIsquierda;
-    private Double operadorDerecha ;
     private JPanel CalculadoraView;
+    private String operadorUno;
     private Double resultadocalculo = 0.0;
     private String signo;
-    ArrayList <Double> numeros= new ArrayList<Double>();
-    ArrayList <String> signos= new ArrayList<String>();
 
     public Calculadora(){
         boton0.addActionListener(new NumeroBtnClicado(boton0.getText()));
@@ -53,6 +49,9 @@ public class Calculadora {
         botonc.addActionListener(new BtnLimpiar());
         botonigual.addActionListener(new BtnIgual());
     }
+
+
+
     private class NumeroBtnClicado implements ActionListener{
         private String valor;
         public NumeroBtnClicado(String valor){
@@ -80,7 +79,6 @@ public class Calculadora {
             }
         }
     }
-
     private class OperacionBtnClicado implements ActionListener{
         private String valor;
         public OperacionBtnClicado(String valor){
