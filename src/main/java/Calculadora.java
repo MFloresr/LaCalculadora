@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.DoubleSummaryStatistics;
 
 /**
  * Created by Vipi on 02/02/2016.
@@ -22,10 +24,14 @@ public class Calculadora {
     private JButton boton0;
     private JButton botonpunto;
     private JButton botonigual;
+    private String operadorUno;
     private Double operadorIsquierda;
     private Double operadorDerecha ;
-    private Operacion calcOperacion;
     private JPanel CalculadoraView;
+    private Double resultadocalculo = 0.0;
+    private String signo;
+    ArrayList <Double> numeros= new ArrayList<Double>();
+    ArrayList <String> signos= new ArrayList<String>();
 
     public Calculadora(){
         boton0.addActionListener(new NumeroBtnClicado(boton0.getText()));
@@ -37,12 +43,13 @@ public class Calculadora {
         boton6.addActionListener(new NumeroBtnClicado(boton6.getText()));
         boton7.addActionListener(new NumeroBtnClicado(boton7.getText()));
         boton8.addActionListener(new NumeroBtnClicado(boton8.getText()));
-        boton8.addActionListener(new NumeroBtnClicado(boton9.getText()));
+        boton9.addActionListener(new NumeroBtnClicado(boton9.getText()));
+        botonpunto.addActionListener(new NumeroBtnClicado(botonpunto.getText()));
 
-        botonsuma.addActionListener(new OperacionBtnClicado(Operacion.SUMA));
-        botonres.addActionListener(new OperacionBtnClicado(Operacion.RESTA));
+        botonsuma.addActionListener(new OperacionBtnClicado(botonsuma.getText()));
+        botonres.addActionListener(new OperacionBtnClicado(botonres.getText()));
+
         botonc.addActionListener(new BtnLimpiar());
-        botonpunto.addActionListener(new PuntoDecimalBtn());
         botonigual.addActionListener(new BtnIgual());
     }
     private class NumeroBtnClicado implements ActionListener{
@@ -52,59 +59,69 @@ public class Calculadora {
         }
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(operadorIsquierda==null || operadorIsquierda==0.0){
-                valor = resultado.getText() +valor;
-                System.out.println(valor);
-                System.out.println(operadorIsquierda);
-            }else{
-                operadorDerecha = Double.valueOf(valor);
-                System.out.println(operadorDerecha);
+            if (operadorUno == null && valor != ".") {
+                operadorUno = valor;
+                resultado.setText(resultado.getText()+valor);
+            } else {
+                if(operadorUno!=null){
+                    if(valor=="."){
+                        if(operadorUno.contains(valor)){
+                            botonpunto.setEnabled(false);
+                        }else{
+                            operadorUno = operadorUno+valor;
+                            resultado.setText(resultado.getText() +valor);
+                        }
+                    }else{
+                        operadorUno = operadorUno+valor;
+                        resultado.setText(resultado.getText() +valor);
+                    }
+                }
             }
-            resultado.setText(valor);
-            System.out.println(resultado);
         }
     }
 
     private class OperacionBtnClicado implements ActionListener{
-        private Operacion operacion;
-        public OperacionBtnClicado(Operacion operacion){
-            this.operacion=operacion;
+        private String valor;
+        public OperacionBtnClicado(String valor){
+            this.valor=valor;
         }
         @Override
         public void actionPerformed(ActionEvent e) {
-            calcOperacion= operacion;
-            operadorIsquierda = Double.valueOf(resultado.getText());
-            System.out.println(calcOperacion);
+            if(operadorUno!=null && (valor.equals("+")|| valor.equals("-"))){
+                if(valor.equals("+")){
+                    resultadocalculo= resultadocalculo +Double.valueOf(operadorUno);
+                    resultado.setText(resultado.getText() +valor);
+                    operadorUno=null;
+                    signo="+";
+                }if(valor.equals("-")){
+                    resultadocalculo= resultadocalculo -Double.valueOf(operadorUno);
+                    resultado.setText(resultado.getText() +valor);
+                    operadorUno=null;
+                    signo="-";
+                }
+                System.out.println(resultadocalculo);
+            }
         }
     }
-
     private class BtnLimpiar implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
             resultado.setText("");
-            operadorIsquierda = 0.0;
-            operadorDerecha = 0.0;
+            operadorUno=null;
+            resultadocalculo=0.0;
         }
     }
-
-    private class PuntoDecimalBtn implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            resultado.setText(resultado.getText() + ".");
-
-        }
-    }
-
     private class BtnIgual implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Double output = calcOperacion.getOperador().applyAsDouble(operadorIsquierda, operadorDerecha);
-            resultado.setText(output%1==0?String.valueOf(output.intValue()):String.valueOf(output));
-            operadorIsquierda = 0.0;
-            operadorDerecha = 0.0;
+            if(signo.equals("+")){
+                resultadocalculo = resultadocalculo+Double.valueOf(operadorUno);
+            }else{
+                resultadocalculo = resultadocalculo-Double.valueOf(operadorUno);
+            }
+            resultado.setText(String.valueOf(resultadocalculo));
         }
     }
 
