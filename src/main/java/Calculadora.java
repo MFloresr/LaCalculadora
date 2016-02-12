@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -101,6 +102,7 @@ public class Calculadora {
                 }
                 System.out.println(resultadocalculo);
             }
+            botonpunto.setEnabled(true);
         }
     }
     private class BtnLimpiar implements ActionListener {
@@ -110,6 +112,7 @@ public class Calculadora {
             resultado.setText("");
             operadorUno=null;
             resultadocalculo=0.0;
+            botonpunto.setEnabled(true);
         }
     }
     private class BtnIgual implements ActionListener {
@@ -121,7 +124,14 @@ public class Calculadora {
             }else{
                 resultadocalculo = resultadocalculo-Double.valueOf(operadorUno);
             }
-            resultado.setText(String.valueOf(resultadocalculo));
+
+            if(resultadocalculo.equals(666.0)){
+                resultado.setText(String.valueOf("Error"));
+                operadorUno=null;
+                resultadocalculo=0.0;
+            }else{
+                resultado.setText(String.valueOf(resultadocalculo));
+            }
         }
     }
 
@@ -130,6 +140,13 @@ public class Calculadora {
         frame.setContentPane(new Calculadora().CalculadoraView);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
+        frame.setResizable(false);
         frame.setVisible(true);
+        Toolkit miPantalla=Toolkit.getDefaultToolkit();
+        Dimension tamanopantalla=miPantalla.getScreenSize();
+        int alturapantalla=tamanopantalla.height;
+        int anchurapantalla= tamanopantalla.width;
+
+        frame.setLocation(anchurapantalla/4,alturapantalla/4);
     }
 }
